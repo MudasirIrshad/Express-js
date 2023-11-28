@@ -1,0 +1,5 @@
+Express js setup:
+1- npm init -y
+2- npm install Express
+3- write basic express code in javascript file
+4- install Thunder Client or Post Man for testing Http server
