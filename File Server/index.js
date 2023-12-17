@@ -10,9 +10,6 @@ function file(req,res){
           res.send(err)
           return;
         }
-        else if(files.length==0){
-            res.send('Directory is Empty')
-        }
         else{
             res.send(files)
         }
@@ -21,6 +18,21 @@ function file(req,res){
 app.get('/files',file)
 
 
+app.get('/fileContent',(req,res)=>{
+    let filename=req.query.name
+    fs.readFile(`./file/${filename}`,'utf8',(err,data)=>{
+        if(err){
+            res.send(err)
+        }
+        else{
+            res.send(data)
+        }
+    })
+})
+
+app.get('*',(req,res)=>{
+    res.status(404).send('Route Not found')
+})
 
 
 app.listen(port,()=>{console.log('Server Started on port: '+port);})
