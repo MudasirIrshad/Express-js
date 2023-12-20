@@ -18,6 +18,26 @@ app.get('/todo',(req,res)=>{
     res.send(existingObject.todo)
 })
 
+app.post('/todo',(req,res)=>{
+    let id=Math.floor(Math.random()*10000)
+    let title=req.body.title
+    let description=req.body.description
+    let data={id,title,description}
+    res.send(data)
+
+    
+
+    existingObject.todo.push(data);
+
+    // Convert the updated object back to a JSON-formatted string
+    const updatedJsonString = JSON.stringify(existingObject, null, 2);
+
+    // Write the updated JSON string back to the file
+    fs.writeFileSync(filepath, updatedJsonString, 'utf-8');
+})
+
+
+
 
 
 
