@@ -37,6 +37,25 @@ app.post('/todo',(req,res)=>{
 })
 
 
+app.delete('/todo',(req,res)=>{
+    let id=req.query.id
+    let arr=existingObject.todo
+    for(let i of arr){
+        if(id==i.id){
+            const index = arr.indexOf(i);
+            console.log(index);
+            arr.splice(index,1)
+            res.send(`Deleted: {\nid: ${i.id}\ntitle: ${i.title}\ndescription: ${i.description}\n}`)
+        }
+    }
+
+    const updatedJsonString = JSON.stringify(existingObject, null, 2);
+
+    // Write the updated JSON string back to the file
+    fs.writeFileSync(filepath, updatedJsonString, 'utf-8');
+    
+})
+
 
 
 
