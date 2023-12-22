@@ -24,9 +24,6 @@ app.post('/todo',(req,res)=>{
     let description=req.body.description
     let data={id,title,description}
     res.send(data)
-
-    
-
     existingObject.todo.push(data);
 
     // Convert the updated object back to a JSON-formatted string
@@ -36,7 +33,7 @@ app.post('/todo',(req,res)=>{
     fs.writeFileSync(filepath, updatedJsonString, 'utf-8');
 })
 
-
+// deleting specific task
 app.delete('/todo',(req,res)=>{
     let id=req.query.id
     let arr=existingObject.todo
