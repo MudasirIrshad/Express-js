@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="handleClick()">Click Me</button>
+
+    <script>
+        function handleClick() {
+            fetch('http://localhost:3000', {
+                method: "GET"
+            }).then((res) => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error! Status: ${res.status}`);
+                }
+                return res.json();
+            }).then(parsedResponse);
+        }
+
+        function parsedResponse(data) {
+            console.log(data);
+        }
+    </script>
+</body>
+</html>
