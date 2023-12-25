@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script>
+    function Showtask(){
+        let obj={
+            method:"GET"
+        }
+        fetch("http://localhost:3000/todo",obj).then((res)=>{
+            res.json().then((data)=>{
+                let tasks=JSON.stringify(data)
+                document.getElementById("tasks").innerText=tasks
+               
+            })
+        })
+    }
+   
+
+</script>
+<body>
+
+    title: <input type="text" id="title"><br><br>
+    description: <input type="text" id="description"><br><br>
+    <button onclick="addTask()">Add Task</button>
+    <button onclick="Showtask()">Show Task</button>
+    <h1>Task Fetch from backend</h1>
+    <div id="tasks"></div>
+    <h1>Deleting specific ID taks</h1>
+    Task ID: <input type="number" id="TaskID">
+    <button onclick="deleteTask()">Delete</button>
+
+</body>
+</html>
