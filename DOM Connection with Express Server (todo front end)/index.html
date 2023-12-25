@@ -36,7 +36,16 @@
         fetch("http://localhost:3000/todo",obj)
     }
 
-   
+    function deleteTask(){
+        let id=document.getElementById("TaskID").value
+        let obj={
+            method:"DELETE",
+            headers:{
+                "Content-Type":"application/json"
+            }
+        }
+        fetch(`http://localhost:3000/todo?id=${id}`,obj)
+    }
 
 
 </script>
