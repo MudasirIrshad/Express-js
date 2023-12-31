@@ -12,11 +12,54 @@
         }
         fetch("http://localhost:3000/todo",obj).then((res)=>{
             res.json().then((data)=>{
-                let tasks=JSON.stringify(data)
-                document.getElementById("tasks").innerText=tasks
-               
+                let parent=document.getElementById("tasks")
+                parent.style.backgroundColor="cyan"
+                if(data.length==0){
+                    alert("No tasks are in todo ")
+                }
+                for(let i=0;i<data.length;i++){
+                    
+                    let children=document.createElement("div")
+
+                    let grandChild=document.createElement('span')
+                    grandChild.style.padding='10px'
+                    children.appendChild(grandChild).innerHTML=data[i].id
+
+
+
+                    let grandChild1=document.createElement("span")
+                    grandChild1.style.padding='10px'
+                    children.appendChild(grandChild1).innerHTML=data[i].title
+
+                    let grandChild2=document.createElement("span")
+                    grandChild2.style.padding='10px'
+                    children.appendChild(grandChild2).innerHTML=data[i].description
+
+
+                    
+                    let grandChild3=document.createElement("button")
+                    function deleteTask(){
+                        
+                    let id=data[i].id
+                    let obj={
+                        method:"DELETE",
+                        headers:{
+                            "Content-Type":"application/json"
+                        }
+                    }
+                    fetch(`http://localhost:3000/todo?id=${id}`,obj)
+                  
+                    }
+                    
+                    grandChild3.style.margin='10px'
+                    grandChild3.addEventListener('click',deleteTask)
+                    children.appendChild(grandChild3).innerHTML="Delete"
+
+                    parent.appendChild(children)
+                }
             })
         })
+     
     }
     function addTask(){
         let title=document.getElementById("title").value
@@ -36,17 +79,8 @@
         fetch("http://localhost:3000/todo",obj)
     }
 
-    function deleteTask(){
-        let id=document.getElementById("TaskID").value
-        let obj={
-            method:"DELETE",
-            headers:{
-                "Content-Type":"application/json"
-            }
-        }
-        fetch(`http://localhost:3000/todo?id=${id}`,obj)
-    }
 
+    
 
 </script>
 <body>
@@ -55,11 +89,10 @@
     description: <input type="text" id="description"><br><br>
     <button onclick="addTask()">Add Task</button>
     <button onclick="Showtask()">Show Task</button>
+
     <h1>Task Fetch from backend</h1>
     <div id="tasks"></div>
-    <h1>Deleting specific ID taks</h1>
-    Task ID: <input type="number" id="TaskID">
-    <button onclick="deleteTask()">Delete</button>
 
 </body>
+
 </html>
