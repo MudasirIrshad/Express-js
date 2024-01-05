@@ -53,6 +53,20 @@ app.post('/course',(req,res)=>{
 })
 
 
+app.get('/course/:id',(req,res)=>{
+    let id=req.params.id
+    let found=false
+    for(let i of course){
+        if(i.id==id){
+            res.json(i)
+            found=true
+            break;
+        }
+    }
+    if(!found){
+        res.send("Not found")
+    }
+})
 
 
 app.listen(port)
