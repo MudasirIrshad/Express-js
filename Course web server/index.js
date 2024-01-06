@@ -68,6 +68,10 @@ app.get('/course/:id',(req,res)=>{
     }
 })
 
+app.get('/allCourses',(req,res)=>{
+    res.send(course)
+})
+
 app.put('/course/:id',(req,res)=>{
     const {name, description, price}=req.body
     let id=Number(req.params.id)
