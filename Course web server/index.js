@@ -68,7 +68,19 @@ app.get('/course/:id',(req,res)=>{
     }
 })
 
+app.put('/course/:id',(req,res)=>{
+    const {name, description, price}=req.body
+    let id=Number(req.params.id)
 
+    for(let i of course){
+        if(i.id==id){
+            Object.assign(i,{id,name,description,price})
+            res.send(course)
+            break;
+        }
+    }
+
+})
 app.listen(port)
 
 
