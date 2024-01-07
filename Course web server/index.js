@@ -83,8 +83,33 @@ app.put('/course/:id',(req,res)=>{
             break;
         }
     }
+})
+// USER SERVER START HERE
+
+let user=[]
+
+
+function signupMiddleware(req,res,next){
+    const {name,gmail,password}=req.body
+    let User=user.find(u=> u.gmail==gmail)
+    if(User){
+        res.status(404).send("user already exits")
+    }
+    else{
+        user.push({name,gmail,password})
+        next()
+
+    }
+}
+app.post('/user/signup',signupMiddleware,(req,res)=>{
+    res.send("Signed up successfull")
+})
+
+
+app.post('/user/login',(req,res)=>{
 
 })
+
 app.listen(port)
 
 
