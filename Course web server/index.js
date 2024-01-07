@@ -7,45 +7,49 @@ app.use(bodyparser.json())
 let Admin=[]
 let course=[]
 
-function adminMiddleWare(req,res,next){
-    let login=false
+function adminSignup(req,res,next){
     const {name,password}=req.body
-    let admin=Admin.find(a => a.name==name && a.password==password)
-    if(Admin.length==0){
-        res.status(404).send('No Admin signed in');
+    let admin=Admin.find(u=> u.name==name && u.password==password)
+    if(admin){
+        res.status(404).send("user already exits")
     }
-    else if(!admin){
-        res.status(404).send('No Account found');
+    else if(Admin.length>=1){
+        res.status(401).send("Admin Exits")
+        console.log(Admin);
     }
-    else if(admin){
-        login=true
-        if(login=true)next()
+    else{
+       Admin.push({name,password})
+       next()
+    }
+}
+function adminLogin(req,res,next){
+    const {name,password}=req.headers
+    let admin=Admin.find(u=> u.name==name && u.password==password)
+    if(admin){
+        next()
+    }
+    else{
+        if(Admin.length==0){
+            res.status(404).send("No admin Signed up")
+        }
+        else{
+            res.status(404).send("Detail not matched")
+        }
+
     }
 }
 
-app.post('/signup',(req,res,next)=>{
-    const {name,password}=req.body
-
-    console.log(Admin);
-    if(Admin.length!=0){
-        res.status(404).send('Admin Exits');
-    }
-    else if(name==undefined || password==undefined){
-        res.status(404).send('Detail wrong')
-    }
-    else{
-        Admin.push({name,password})
-        next()
-    }
-},(req,res)=>{
-    res.send('Singup successfully')
+app.post('/admin/signup',adminSignup,(req,res)=>{
+    res.send("Signup successfull")
 })
-app.post('/login',adminMiddleWare,(req,res)=>{
+
+
+app.post('/admin/login',adminLogin,(req,res)=>{
     res.send('Loged in')
 })
 
 let id=0
-app.post('/course',(req,res)=>{
+app.post('/admin/course',adminLogin,(req,res)=>{
     const {name, description, price}=req.body
     id=id+1
     course.push({id,name,description,price})
@@ -53,7 +57,7 @@ app.post('/course',(req,res)=>{
 })
 
 
-app.get('/course/:id',(req,res)=>{
+app.get('/course/:id',adminLogin,(req,res)=>{
     let id=req.params.id
     let found=false
     for(let i of course){
@@ -72,7 +76,7 @@ app.get('/allCourses',(req,res)=>{
     res.send(course)
 })
 
-app.put('/course/:id',(req,res)=>{
+app.put('/course/:id',adminLogin,(req,res)=>{
     const {name, description, price}=req.body
     let id=Number(req.params.id)
 
@@ -101,13 +105,25 @@ function signupMiddleware(req,res,next){
 
     }
 }
+function loginMiddleware(req,res,next){
+    const {name,gmail,password}=req.body
+    let User=user.find(u=> u.gmail==gmail && u.name==name && u.password==password)
+    if(User){
+        next()
+    }
+    else{
+        res.status(404).send("User not signed up")
+
+    }
+}
+
 app.post('/user/signup',signupMiddleware,(req,res)=>{
     res.send("Signed up successfull")
 })
 
 
-app.post('/user/login',(req,res)=>{
-
+app.post('/user/login',loginMiddleware,(req,res)=>{
+    res.send("Loged in successfull")
 })
 
 app.listen(port)
