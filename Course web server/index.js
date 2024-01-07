@@ -1,3 +1,19 @@
+/*
+Admin Routes:
+    /admin/signup => Creates Admin 
+    /admin/login => Login the Admin
+    /admin/course => Add the new Courses
+    /admin/userDetails => View the Detail of the users
+
+User routes:
+    /user/signup => Make account of user
+    /user/login => Login the user
+    /user/purchaseCOurse => User can purchase course WRT course ID
+
+Extra Routes:
+    /allCourses => See the complete courses which are offered
+*/
+
 const express=require('express')
 const app=express()
 const port=3000
@@ -50,28 +66,11 @@ app.post('/admin/login',adminLogin,(req,res)=>{
     res.send('Loged in')
 })
 
-let id=0
 app.post('/admin/course',adminLogin,(req,res)=>{
     const {name, description, price}=req.body
-    id=id+1
+    id=Math.floor(Math.random()*100000)
     course.push({id,name,description,price})
     res.json(course)
-})
-
-
-app.get('/course/:id',adminLogin,(req,res)=>{
-    let id=req.params.id
-    let found=false
-    for(let i of course){
-        if(i.id==id){
-            res.json(i)
-            found=true
-            break;
-        }
-    }
-    if(!found){
-        res.send("Not found")
-    }
 })
 
 app.get('/allCourses',(req,res)=>{
@@ -97,6 +96,7 @@ app.get('/admin/userDetails',adminLogin,(req,res)=>{
 
 
 
+
 // USER SERVER START HERE
 function signupMiddleware(req,res,next){
     const {name,gmail,password}=req.body
@@ -105,7 +105,7 @@ function signupMiddleware(req,res,next){
         res.status(404).send("user already exits")
     }
     else{
-        user.push({name,gmail,password})
+        user.push({name,gmail,password,purchasedCourses:[]})
         next()
     }
 }
@@ -126,6 +126,19 @@ app.post('/user/signup',signupMiddleware,(req,res)=>{
 })
 app.post('/user/login',loginMiddleware,(req,res)=>{
     res.send("Loged in successfull")
+})
+app.post('/user/purchaseCourse',loginMiddleware,(req,res)=>{
+    const {name,gmail,password}=req.headers
+    let courseID=Number(req.body.id)
+    
+    let Course=course.find(c=>c.id==courseID)
+    for(let i of user){
+        if(i.gmail==gmail){
+            i.purchasedCourses.push({Course})
+            res.send(i)
+            break;
+        }
+    }
 })
 app.listen(port)
 
