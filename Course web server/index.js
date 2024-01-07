@@ -6,6 +6,8 @@ app.use(bodyparser.json())
 
 let Admin=[]
 let course=[]
+let user=[]
+
 
 function adminSignup(req,res,next){
     const {name,password}=req.body
@@ -88,11 +90,14 @@ app.put('/course/:id',adminLogin,(req,res)=>{
         }
     }
 })
+
+app.get('/admin/userDetails',adminLogin,(req,res)=>{
+    res.json(user)
+})
+
+
+
 // USER SERVER START HERE
-
-let user=[]
-
-
 function signupMiddleware(req,res,next){
     const {name,gmail,password}=req.body
     let User=user.find(u=> u.gmail==gmail)
@@ -102,30 +107,26 @@ function signupMiddleware(req,res,next){
     else{
         user.push({name,gmail,password})
         next()
-
     }
 }
 function loginMiddleware(req,res,next){
-    const {name,gmail,password}=req.body
+
+    const {name,gmail,password}=req.headers
     let User=user.find(u=> u.gmail==gmail && u.name==name && u.password==password)
     if(User){
         next()
     }
     else{
         res.status(404).send("User not signed up")
-
     }
 }
 
 app.post('/user/signup',signupMiddleware,(req,res)=>{
     res.send("Signed up successfull")
 })
-
-
 app.post('/user/login',loginMiddleware,(req,res)=>{
     res.send("Loged in successfull")
 })
-
 app.listen(port)
 
 
