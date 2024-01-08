@@ -9,6 +9,7 @@ User routes:
     /user/signup => Make account of user
     /user/login => Login the user
     /user/purchaseCOurse => User can purchase course WRT course ID
+    /user/editDetail => User can edit his/her account detail (name, password) only
 
 Extra Routes:
     /allCourses => See the complete courses which are offered
