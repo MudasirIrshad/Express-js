@@ -61,14 +61,14 @@ app.post('/admin/signup',adminSignup,(req,res)=>{
     res.send("Signup successfull")
 })
 
-
 app.post('/admin/login',adminLogin,(req,res)=>{
     res.send('Loged in')
 })
 
+let id=0
 app.post('/admin/course',adminLogin,(req,res)=>{
     const {name, description, price}=req.body
-    id=Math.floor(Math.random()*100000)
+    id=id+1
     course.push({id,name,description,price})
     res.json(course)
 })
@@ -136,6 +136,18 @@ app.post('/user/purchaseCourse',loginMiddleware,(req,res)=>{
         if(i.gmail==gmail){
             i.purchasedCourses.push({Course})
             res.send(i)
+            break;
+        }
+    }
+})
+
+app.put('/user/editDetail',loginMiddleware,(req,res)=>{
+    let gmail=req.query.gmail
+    const {name, password}=req.body
+    for(let i of user){
+        if(i.gmail==gmail){
+            Object.assign(i,{name,password})
+            res.send(user)
             break;
         }
     }
