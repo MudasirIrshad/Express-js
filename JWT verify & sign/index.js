@@ -49,11 +49,22 @@ function verifyLogin(req,res,next){
     }
 }
 app.post('/login',verifyLogin,(req,res)=>{
-    res.send("Loged in successfull")
     
+    res.send("Loged in successfull")
+
 })
 
 
+app.post('/forgotToken',(req,res)=>{
+    let gmail=req.body.gmail
+    let verifyGmail=USER.find(i=>i.gmail==gmail)
+    if(verifyGmail){
+        res.send(verifyGmail)
+    }
+    else{
+        res.send('No user signed in from this gmail')
+    }
+}) 
 
 
 
