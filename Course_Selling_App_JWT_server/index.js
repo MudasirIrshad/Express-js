@@ -63,4 +63,17 @@ app.post('/admin/courses',AdminAuthentication,(req,res)=>{
 app.get('/admin/courses',AdminAuthentication,(req,res)=>{
     res.send(Course)
 })
+
+app.put('/admin/course',AdminAuthentication,(req,res)=>{
+    let id=req.query.id
+    const {title,description,price}=req.body
+    let course=Course.find(i=>i.id==id)
+    if(course){
+        Object.assign(course,{title,description,price})
+        res.send(Course)
+    }
+    else{
+        res.send('Course Not found')
+    }
+})
 // ----------------------------------------------------
