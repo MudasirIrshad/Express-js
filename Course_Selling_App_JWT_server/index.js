@@ -118,3 +118,18 @@ app.get('/user/login',UserAuthentication,(req,res)=>{
 app.get('/user/course',UserAuthentication,(req,res)=>{
     res.send(Course)
 })
+
+
+app.post('/user/course/',UserAuthentication,(req,res)=>{
+    let id=Number(req.body.id)
+    let tkn=req.headers.authorization.split(' ')[1]
+    let pCourse=Course.find(i=>i.id==id)
+    if(pCourse){
+        let user=USER.find(i=>i.token==tkn)
+        user.purchasedCourses.push(pCourse)
+        res.send(user)
+    }
+    else{
+        res.send('Course not found')
+    }
+})
