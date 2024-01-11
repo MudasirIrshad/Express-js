@@ -36,6 +36,7 @@ app.post("/admin/signup",(req,res)=>{
     }
 })
 
+// -------------- ADMIN LOGIN ------------------------
 function AdminAuthentication(req,res,next){
     let tkn=req.headers.authorization.split(' ')[1]
     let findToken=Admin.find(i=>i.token==tkn)
@@ -46,7 +47,20 @@ function AdminAuthentication(req,res,next){
         res.status(404).send("No Admin signed in")
     }
 }
-
 app.post('/admin/login',AdminAuthentication,(req,res)=>{
     res.send("Login Done")
 })
+// ---------------------------------------------------
+
+// ----------- Course Add, Detail --------------------
+let id=0
+app.post('/admin/courses',AdminAuthentication,(req,res)=>{
+    id+=1
+    const {title,description,price}=req.body
+    Course.push({id,title,description,price})
+    res.send({id,title,description,price})
+})
+app.get('/admin/courses',AdminAuthentication,(req,res)=>{
+    res.send(Course)
+})
+// ----------------------------------------------------
