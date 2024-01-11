@@ -9,7 +9,7 @@ app.listen(port,()=>{
     console.log("Server Started at port: "+port);
 })
 
-const SecretKey="JWT Course selling server"
+const AdminSecretKey="JWT Course selling server"
 
 const USER=[]
 const Admin=[]
@@ -23,7 +23,7 @@ app.post("/admin/signup",(req,res)=>{
         res.status(401).send('Admin Exits')
     }
     else{
-        jwt.sign({name,password},SecretKey,(err,token)=>{
+        jwt.sign({name,password},AdminSecretKey,(err,token)=>{
             if(err){
                 res.json({err})
             }
@@ -51,7 +51,9 @@ app.post('/admin/login',AdminAuthentication,(req,res)=>{
     res.send("Login Done")
 })
 // ---------------------------------------------------
-
+app.get('/admin/users',AdminAuthentication,(req,res)=>{
+    res.send(USER)
+})
 // ----------- Course Add, Detail --------------------
 let id=0
 app.post('/admin/courses',AdminAuthentication,(req,res)=>{
@@ -77,3 +79,42 @@ app.put('/admin/course',AdminAuthentication,(req,res)=>{
     }
 })
 // ----------------------------------------------------
+const UserSecretKey="I am a user"
+app.post('/user/signup',(req,res)=>{
+    const {name,gmail,password}=req.body
+    let UserExit=USER.find(i=>(i.name && i.gmail && i.password)==(name && gmail && password))
+    if(UserExit){
+        res.send('Gmail is already signed up')
+    }
+    else{
+        jwt.sign({name,gmail,password},UserSecretKey,(err,token)=>{
+            if(err){
+                res.json({err})
+            }
+            else{
+                USER.push({name,gmail,password,purchasedCourses:[],token})
+                res.send({name,gmail,password,token})
+            }
+        })
+    }
+})
+function UserAuthentication(req,res,next){
+    let tkn=req.headers.authorization.split(' ')[1]
+    let User=USER.find(i=>i.token==tkn)
+    if(User){
+        next()
+    }
+    else{
+        res.json({
+            err:"Not found"
+        })
+    }
+}
+
+app.get('/user/login',UserAuthentication,(req,res)=>{
+    res.send('User Logged in sucessfull')
+})
+
+app.get('/user/course',UserAuthentication,(req,res)=>{
+    res.send(Course)
+})
