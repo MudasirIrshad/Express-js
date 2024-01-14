@@ -53,6 +53,9 @@ app.post('/login',async (req, res) => {
             }
         })
     }
+    else{
+        res.send("No user found")
+    }
 });
 
 app.listen(port, () => {
