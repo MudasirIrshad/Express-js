@@ -36,6 +36,25 @@ app.post('/signup', async (req, res) => {
   }
   
 });
+let secretKey='user secret key'
+app.post('/login',async (req, res) => {
+  const { name, gmail, password } = req.body;
+
+    let find=await UserSignup.findOne({ name, gmail, password });
+    if(find){
+        jwt.sign({ name, gmail, password },secretKey,(err,token)=>{
+            if(err){
+                res.send(err)
+            }
+            else{
+                res.send({
+                    name,gmail,token
+                })
+            }
+        })
+    }
+});
+
 app.listen(port, () => {
   console.log('Server started at port: ' + port);
 });
