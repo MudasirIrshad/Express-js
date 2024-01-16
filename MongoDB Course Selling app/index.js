@@ -74,8 +74,9 @@ app.post('/admin/login',AdminAuthentication,(req,res)=>{
     res.send("Login Done")
 })
 // ---------------------------------------------------
-app.get('/admin/users',AdminAuthentication,(req,res)=>{
-    res.send(USER)
+app.get('/admin/users',AdminAuthentication,async (req,res)=>{
+    const users=await UserSignup.find()
+    res.json(users)
 })
 // ----------- Course Add, Detail --------------------
 
@@ -94,9 +95,9 @@ app.get('/admin/courses',AdminAuthentication,async (req,res)=>{
 })
 // ----------------------------------------------------
 const UserSecretKey="I am a user"
-app.post('/user/signup',(req,res)=>{
-    const {name,gmail,password}=req.body
-    let UserExit=UserSignup.findOne({name,gmail})
+app.post('/user/signup',async (req,res)=>{
+    const {name,gmail,password,purchaseCourses}=req.body
+    let UserExit=await UserSignup.findOne({gmail})
     if(UserExit){
         res.send('Gmail is already signed up')
     }
@@ -107,8 +108,10 @@ app.post('/user/signup',(req,res)=>{
             }
             else{
                 const newUser=new UserSignup({
-
+                    name,gmail,password,purchaseCourses
                 })
+                newUser.save()
+                res.send({message: "Signed up done",token})
             }
         })
     }
