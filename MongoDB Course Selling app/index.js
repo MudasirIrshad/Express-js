@@ -117,37 +117,33 @@ app.post('/user/signup',async (req,res)=>{
     }
 })
 function UserAuthentication(req,res,next){
-    let tkn=req.headers.authorization.split(' ')[1]
-    let User=USER.find(i=>i.token==tkn)
-    if(User){
-        next()
-    }
-    else{
-        res.json({
-            err:"Not found"
-        })
-    }
+    let token=req.headers.authorization.split(' ')[1]
+    if (!token) return res.status(401).send('Access denied. No token provided.');
+
+    jwt.verify(token, UserSecretKey, (err, decoded) => {
+        if (err) return res.status(401).send('Invalid token.');
+        req.user = decoded;
+        next();
+    });
+
 }
 
-app.get('/user/login',UserAuthentication,(req,res)=>{
+app.post('/user/login',UserAuthentication,(req,res)=>{
     res.send('User Logged in sucessfull')
 })
 
-app.get('/user/course',UserAuthentication,(req,res)=>{
-    res.send(Course)
+app.get('/user/course',UserAuthentication,async (req,res)=>{
+    let courses=await courseAdd.find()
+    res.json({
+        courses
+    })
 })
 
 
-app.post('/user/course/',UserAuthentication,(req,res)=>{
+app.post('/user/purchaseCourse',UserAuthentication,async (req,res)=>{
     let id=Number(req.body.id)
     let tkn=req.headers.authorization.split(' ')[1]
-    let pCourse=Course.find(i=>i.id==id)
-    if(pCourse){
-        let user=USER.find(i=>i.token==tkn)
-        user.purchasedCourses.push(pCourse)
-        res.send(user)
-    }
-    else{
-        res.send('Course not found')
-    }
+    let pCourse=await courseAdd.findById({id})
+    
+    
 })
