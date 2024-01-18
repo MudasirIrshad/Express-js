@@ -21,10 +21,7 @@ const userSignupSchema=new mongoose.Schema({
     name:String,
     gmail:String,
     password:String,
-    purchaseCourses: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'courseAdd'
-      }]
+    purchaseCourses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'courseAdd' }]
 })
 const UserSignup=mongoose.model('UserSignup',userSignupSchema)
 
@@ -141,9 +138,14 @@ app.get('/user/course',UserAuthentication,async (req,res)=>{
 
 
 app.post('/user/purchaseCourse',UserAuthentication,async (req,res)=>{
-    let id=Number(req.body.id)
-    let tkn=req.headers.authorization.split(' ')[1]
-    let pCourse=await courseAdd.findById({id})
-    
-    
+    let id=req.body.id
+    let pCourse=await courseAdd.findById(id)
+    let gmail=req.user.gmail
+    let user=await UserSignup.findOne({gmail})
+
+    if(pCourse){
+        user.purchaseCourses.push(pCourse._id)
+        user.save()
+    }
+    res.send(user)
 })
