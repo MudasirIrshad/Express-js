@@ -11,7 +11,7 @@ function VoteMiddleWare(req,res,next){
     else {
         let obj={
             age,
-            err:"Age is less than 18"
+            err:"Age is less than 18 ok"
         }
         res.send(obj)
     }
