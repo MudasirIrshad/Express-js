@@ -33,8 +33,9 @@ app.post("/signup", async (req, res) => {
       number,
     });
     newUser.save();
-    res.send("User saved");}
-})
+    res.send("User saved");
+  }
+});
 
 const userTokenString = "This is my detail privacy string for JWT token";
 function SignupMiddleware(req, res, next) {
@@ -58,9 +59,33 @@ function SignupMiddleware(req, res, next) {
     res.send("User not found");
   }
 }
-app.post('/login',SignupMiddleware ,function(req, res) {
-  res.send("Welcome")
-})
+app.post("/login", SignupMiddleware, function (req, res) {
+  res.send("Welcome");
+});
+function VerifyLogin(req, res, next) {
+  const token = req.headers.authorization.split(" ")[1];
+  if (!token) return res.status(401).send("Access denied. No token provided.");
+  jwt.verify(token, userTokenString, (err, decoded) => {
+    if (err) return res.status(401).send("Invalid token.");
+    req.user = decoded;
+    next();
+  });
+}
+app.post("/addContact", VerifyLogin, async (req, res) => {
+  const name = req.body.name;
+  const number = req.body.number;
+  const user = await MyContact.findOne({ number });
+  if (user) {
+    res.send("User exits");
+  } else {
+    const newUser = new MyContact({
+      name,
+      number,
+    });
+    newUser.save();
+    res.send("User saved: " + name +" "+ number );
+  }
+});
 app.listen(port, () => {
   console.log("listening on port", port);
 });
